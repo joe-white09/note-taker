@@ -28,18 +28,33 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
-  // set id based on what the next index of the array will be
-  req.body.id = notes.length.toString();
+  // Destructuring assignment for the items in req.body
+  const { title, text } = req.body;
 
-  if (!validateNote(req.body)) {
-    res.status(400).send('The note is not properly formatted.');
-  } else {
-    const note = createNewNote(req.body, notes);
-    res.json(notes);
-  }
+  // If all the required properties are present
+  if (title && text) {
+    // Variable for the object we will save
+    const newNote = {
+      title,
+      text,
+      id: noteId()
+    };
+    notes.push(newNote);
+     // Write the db.json file again.
+  fs.writeFile('./db/db.json', JSON.stringify(notes, null, 2), function (err) {
+
+    if (err) {
+        return console.log(err);
+    }
+// response is the users new note. 
+    res.json(newNote);
 });
 
-
+    } else {
+      res.json('Error in posting note');
+    };
+    
+});
 
 app.listen(PORT, () => {
     console.log(`Server now on port ${PORT}`);
