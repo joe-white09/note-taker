@@ -8,6 +8,8 @@ const apiRoutes = require('./routes/apiRoutes/noteRoute');
 const notes = require('./db/db.json');
 const {createNewNote, validateNote} = require('./lib/notes');
 const noteId = require('./helpers/noteId');
+const setId = require('./helpers/noteId');
+const { v4: uuidv4 } = require('uuid');
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -28,8 +30,10 @@ app.get('/api/notes', (req, res) => {
 });
 
 app.post('/api/notes', (req, res) => {
+  req.body.id = notes.length.toString();
   // Destructuring assignment for the items in req.body
-  const { title, text } = req.body;
+  const { title, text, id } = req.body;
+  
 
   // If all the required properties are present
   if (title && text) {
@@ -37,9 +41,11 @@ app.post('/api/notes', (req, res) => {
     const newNote = {
       title,
       text,
-      id: noteId()
+      id: uuidv4()
     };
+    
     notes.push(newNote);
+
      // Write the db.json file again.
   fs.writeFile('./db/db.json', JSON.stringify(notes, null, 2), function (err) {
 
