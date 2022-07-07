@@ -3,11 +3,12 @@ const fs = require('fs');
 const notes = require('../../db/db.json');
 const { v4: uuidv4 } = require('uuid');
 
+// returns notes db file
 router.get('/', (req, res) => {
-    let results = notes;
-    res.json(results);
+    res.json(notes);
   });
   
+// creates a new note
 router.post('/', (req, res) => {
     // Destructuring assignment for the items in req.body
     const { title, text, id } = req.body;
@@ -38,7 +39,8 @@ router.post('/', (req, res) => {
       };
       
   });
-  
+
+// deletes a note
 router.delete("/:id", function (req, res) {
   
     for (let i = 0; i < notes.length; i++) {
